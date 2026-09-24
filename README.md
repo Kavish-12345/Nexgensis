@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Product Admin Dashboard
 
-## Getting Started
+A small admin dashboard for managing products from the [DummyJSON](https://dummyjson.com) API.
+Built with Next.js (App Router), React, TypeScript, Tailwind CSS and Axios.
 
-First, run the development server:
+**Live demo:** _add Vercel link here_
+**Login:** `emilys` / `emilyspass`
+
+## Setup
+
+Requires Node.js 20+.
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Production build: `npm run build && npm start`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## What's finished
 
-## Learn More
+- [x] Login (`POST /auth/login`) with error messages, a protected `/products` area and a logout button
+- [x] Product list: image, title, category, price, rating and stock (table on desktop, cards on mobile)
+- [x] Server-side pagination with `limit`/`skip`, page numbers, Previous/Next, page size 10/20/50 and "Showing 21–40 of 194"
+- [x] Debounced search (`/products/search?q=`), which goes back to page 1 when the search changes
+- [x] Category filter (`/products/categories`) and sort by title, price or rating
+- [x] Product details at `/products/[id]` with images, description, price and reviews, plus a "not found" page
+- [x] Add and edit form with validation, and a confirm popup before deleting
+- [x] Loading, empty and error states (with Retry)
+- [x] One shared Axios instance: adds the token to every request and handles errors in one place
+- [x] Page, page size, search, category and sort are all kept in the URL
+- [x] Old search results never replace newer ones (the old request is aborted and its response ignored)
+- [x] Bad URL values (`?page=abc`, `?page=999`, `?limit=7`) fall back to safe values
+- [x] Login, Save and Delete can't be sent twice by fast clicking
 
-To learn more about Next.js, take a look at the following resources:
+Not done: automated tests.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**About the UI:** the design is kept simple on purpose. With two days available, I focused on the parts the brief stresses: correct data handling, URL state, race conditions, edge cases and clean code structure. The layout is still responsive and usable.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project structure
 
-## Deploy on Vercel
+```
+src/
+  lib/         axios.ts (shared instance), auth.ts, urlState.ts, pagination.ts, overrides.ts, productForm.ts
+  api/         auth.api.ts, products.api.ts  (all API calls live here)
+  hooks/       useProductList, useProduct, useCategories, useListUrlState, useDebounce, useLocalOverrides, ...
+  components/  small UI components (table, cards, pagination, search, form, dialogs, state views)
+  app/         routes: /login, /products, /products/[id]
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+To test the search race condition, open `/products?delay=2000` (the app passes `delay` on to DummyJSON) and type quickly.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See [NOTES.md](NOTES.md) for the reasons behind the main decisions.

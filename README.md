@@ -3,7 +3,7 @@
 A small admin dashboard for managing products from the [DummyJSON](https://dummyjson.com) API.
 Built with Next.js (App Router), React, TypeScript, Tailwind CSS and Axios.
 
-**Live demo:** _add Vercel link here_
+**Live demo:** https://nexgensis-phi.vercel.app
 **Login:** `emilys` / `emilyspass`
 
 ## Setup
